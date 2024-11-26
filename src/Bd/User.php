@@ -36,6 +36,24 @@ class User extends Conexion
             'im' => $this->imagen
         ]);
     }
+
+    public static function read(): array{
+        $q="select users.*, nombre, color from users, provincias where provincia_id=provincias.id order by users.id desc";
+        $stmt=self::executeQuery($q, [], true);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public static function existeCampo(string $nomCampo, string $valorCampo, ?int $id=null): bool{
+        
+        $q=(is_null($id)) ? "select count(*) as total from users where $nomCampo=:v" : 
+        "select count(*) as total from users where $nomCampo=:v AND id != :i";
+
+        $options=(is_null($id)) ? [':v'=>$valorCampo] : [':v'=>$valorCampo, ':i'=>$id];
+
+        $stmt=self::executeQuery($q, $options, true);
+        return $stmt->fetch(PDO::FETCH_OBJ)->total;
+    }
+
     public static function crearUsersRandom(int $cant): void
     {
         $faker = \Faker\Factory::create('es_ES');
@@ -45,7 +63,15 @@ class User extends Conexion
             $username = $faker->unique()->userName();
             $email = $username . "@" . $faker->freeEmailDomain();
             $provincia_id = $faker->randomElement($provinciasId);
-            $imagen = "img/" . $faker->fakeImg(dir: "./../public/img/", width: 640, height: 480, fullPath: false, text: strtoupper(substr($username, 0, 3)), backgroundColor: [random_int(0, 255), random_int(0, 255), random_int(0, 255)]);
+            $imagen = "img/" . $faker->fakeImg(dir: "./../public/img/", width: 640, height: 480,
+             fullPath: false, text: strtoupper(substr($username, 0, 3)), 
+             backgroundColor: [random_int(0, 255), random_int(0, 255), random_int(0, 255)]);
+            (new User)
+            ->setUsername($username)
+            ->setEmail($email)
+            ->setProvinciaId($provincia_id)
+            ->setImagen($imagen)
+            ->create();
         }
     }
 

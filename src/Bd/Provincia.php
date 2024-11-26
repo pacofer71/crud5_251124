@@ -24,6 +24,12 @@ class Provincia extends Conexion{
         self::executeQuery($q, [':n'=>$this->nombre, ':c'=>$this->color]);
     }
 
+    public static function read(): array{
+        $q="select id, nombre from provincias order by nombre";
+        $stmt=self::executeQuery($q, [], true);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
     public static function getProvArrayId(): array{
         $q="select id from provincias";
         $stmt=self::executeQuery($q, [], true);
