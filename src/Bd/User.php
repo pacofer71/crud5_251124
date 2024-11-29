@@ -33,7 +33,7 @@ class User extends Conexion
             ':u' => $this->username,
             ':e' => $this->email,
             ':pi' => $this->provincia_id,
-            'im' => $this->imagen
+            ':im' => $this->imagen
         ]);
     }
 
