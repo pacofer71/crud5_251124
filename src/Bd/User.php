@@ -37,10 +37,32 @@ class User extends Conexion
         ]);
     }
 
+    public static function getImagenById(int $id): bool|string{
+        $q="select imagen from users where id=:i";
+        $stmt=self::executeQuery($q, [':i'=>$id], true);
+        if(!$fila=$stmt->fetch(PDO::FETCH_OBJ)) return false;
+        return $fila->imagen;
+
+    }
+
     public static function read(): array{
         $q="select users.*, nombre, color from users, provincias where provincia_id=provincias.id order by users.id desc";
         $stmt=self::executeQuery($q, [], true);
         return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public static function getUserById(int $id): bool|User{
+        $q="select * from users where id=:i";
+        $stmt=self::executeQuery($q, [':i'=>$id], true);
+        $usuario=$stmt->fetchAll(PDO::FETCH_CLASS, User::class);
+        return (count($usuario)) ? $usuario[0] : false;
+    }
+
+
+
+    public static function delete(int $id){
+        $q="delete from users where id=:i";
+        self::executeQuery($q, [':i'=>$id], false);
     }
 
     public static function existeCampo(string $nomCampo, string $valorCampo, ?int $id=null): bool{

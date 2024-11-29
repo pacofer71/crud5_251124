@@ -62,7 +62,11 @@ $users = User::read();
                                 style="background-color:<?= $item->color ?>"><?= $item->nombre ?></p>
                         </td>
                         <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
+                            <form action="borrar.php" method="POST">
+                                <input type="hidden" name="id" value="<?= $item->id ?>" />
+                                <a href="update.php?id=<?= $item->id ?>"><i class="fas fa-edit text-blue-500 text-xl hover:text-2xl"></i></a>
+                                <button type="submit"><i class="fas fa-trash text-red-500 text-xl hover:text-2xl"></i></button>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
